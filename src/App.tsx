@@ -1,6 +1,6 @@
-import { useState, useReducer } from "react"
-import { Button, Stack } from "react-bootstrap"
-import Container from "react-bootstrap/Container"
+import { useState } from "react"
+// import { Button, Stack } from "react-bootstrap"
+// import Container from "react-bootstrap/Container"
 import AddBudgetModal from "./components/AddBudgetModal"
 import AddExpenseModal from "./components/AddExpenseModal"
 import ViewExpensesModal from "./components/ViewExpensesModal"
@@ -11,41 +11,12 @@ import ExpenseSummary from "./components/ExpenseSummary"
 import { UNCATEGORIZED_BUDGET_ID, useBudgets } from "./contexts/BudgetsContext"
 import './styles.css'
 
-// Define action types
-type Action =
-  | { type: 'ADD_EXPENSE'; payload: { description: string; amount: number; budgetId: string } }
-  | { type: 'DELETE_EXPENSE'; payload: { id: string } }
-
-// Define initial state
-const initialState = {
-  expenses: []
-}
-
-// Reducer function
-function expenseReducer(state: { expenses: any[] }, action: Action) {
-  switch (action.type) {
-    case 'ADD_EXPENSE':
-      return {
-        ...state,
-        expenses: [...state.expenses, { ...action.payload, id: Date.now().toString() }]
-      }
-    case 'DELETE_EXPENSE':
-      return {
-        ...state,
-        expenses: state.expenses.filter(expense => expense.id !== action.payload.id)
-      }
-    default:
-      return state
-  }
-}
-
 function App() {
   const [showAddBudgetModal, setShowAddBudgetModal] = useState<boolean>(false)
   const [showAddExpenseModal, setShowAddExpenseModal] = useState<boolean>(false)
   const [viewExpensesModalBudgetId, setViewExpensesModalBudgetId] = useState<string | undefined>()
   const [addExpenseModalBudgetId, setAddExpenseModalBudgetId] = useState<string | undefined>()
-  const { budgets, getBudgetExpenses } = useBudgets()
-  const [state, dispatch] = useReducer(expenseReducer, initialState)
+  const { budgets, getBudgetExpenses, expenses } = useBudgets()
 
   function openAddExpenseModal(budgetId?: string) {
     setShowAddExpenseModal(true)
@@ -54,20 +25,16 @@ function App() {
 
   return (
     <>
-      <div className="header">
-        <Container>
-          <h1>Personal Budget Manager</h1>
-        </Container>
-      </div>
-      <Container className="my-4">
-        <Stack direction="horizontal" gap={2} className="mb-4">
-          <Button variant="primary" onClick={() => setShowAddBudgetModal(true)}>
-            Add Budget
-          </Button>
-          <Button variant="outline-primary" onClick={() => openAddExpenseModal()}>
-            Add Expense
-          </Button>
-        </Stack>
+      <nav className="nav-bar">
+        <h1 className="nav-h1">Personal Budget Manager</h1>
+        <ul className="nav-ul">
+          <li className="nav-li"><button className="btn btn-primary" onClick={() => setShowAddBudgetModal(true)}>Add Budget</button></li>
+          <li><button className="btn btn-secondary" onClick={() => openAddExpenseModal()}>Add Expense</button></li>
+        </ul>
+      </nav>
+      
+        
+      <div className="content">  
         <div className="budget-cards">
           {budgets.map(budget => {
             const amount = getBudgetExpenses(budget.id).reduce(
@@ -95,23 +62,25 @@ function App() {
           />
           <TotalBudgetCard />
         </div>
-        <ExpenseSummary expenses={state.expenses} />
-      </Container>
-      <AddBudgetModal
-        show={showAddBudgetModal}
-        handleClose={() => setShowAddBudgetModal(false)}
-      />
-      <AddExpenseModal
-        show={showAddExpenseModal}
-        defaultBudgetId={addExpenseModalBudgetId}
-        handleClose={() => setShowAddExpenseModal(false)}
-        // onAddExpense={(expense) => dispatch({ type: 'ADD_EXPENSE', payload: expense })}
-      />
-      <ViewExpensesModal
-        budgetId={viewExpensesModalBudgetId}
-        handleClose={() => setViewExpensesModalBudgetId(undefined)}
-        // onDeleteExpense={(id: string) => dispatch({ type: 'DELETE_EXPENSE', payload: { id } })}
-      />
+        <ExpenseSummary expenses={expenses} />
+      {/* </Container> */}
+        <AddBudgetModal
+          show={showAddBudgetModal}
+          handleClose={() => setShowAddBudgetModal(false)}
+        />
+        <AddExpenseModal
+          show={showAddExpenseModal}
+          defaultBudgetId={addExpenseModalBudgetId}
+          handleClose={() => setShowAddExpenseModal(false)}
+        />
+        <ViewExpensesModal
+          budgetId={viewExpensesModalBudgetId}
+          handleClose={() => setViewExpensesModalBudgetId(undefined)}
+        />
+      </div>
+        <footer className="foot-er">
+          <p>&copy; 2024 Personal Budget Manager. All rights reserved.</p>
+        </footer>
     </>
   )
 }
