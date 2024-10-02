@@ -1,0 +1,138 @@
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --background-color: #f0f3f5;
+  --text-color: #2c3e50;
+  --card-background: #ffffff;
+  --danger-color: #e74c3c;
+  --warning-color: #f39c12;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.budget-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.budget-card {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.budget-card:hover {
+  transform: translateY(-5px);
+}
+
+.budget-card__title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.budget-card__amount {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.budget-card__progress {
+  margin: 1rem 0;
+}
+
+.budget-card__buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.modal-content {
+  background-color: var(--card-background);
+  border-radius: 8px;
+}
+
+.modal-header {
+  background-color: var(--primary-color);
+  color: white;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.form-control {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
+.expense-summary {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.expense-summary__title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.expense-summary__chart {
+  height: 300px;
+}
