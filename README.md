@@ -17,7 +17,7 @@ The Personal Budget Manager is a user-friendly web application designed to help 
 - **Component Structure:** Functional components with hooks
 - **State Management:** Local state management using React's `useState` and `useReducer` for complex state logic
 - **Data Flow:** Prop-based data and function passing between components
-- **Visualization:** Integrated charting library (e.g., Chart.js) for expense summaries
+- **Visualization:** Integrated charting library, Chart.js, for expense summaries
 
 ## Getting Started
 
