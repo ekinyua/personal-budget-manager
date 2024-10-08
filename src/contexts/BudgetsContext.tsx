@@ -24,6 +24,8 @@ interface BudgetsContextType {
   addBudget: ({ name, max }: Omit<Budget, "id">) => void
   deleteBudget: (id: string) => void
   deleteExpense: (id: string) => void
+  editBudget: (id: string, newBudget: Omit<Budget, "id">) => void
+  editExpense: (id: string, newExpense: Omit<Expense, "id">) => void
 }
 
 const BudgetsContext = React.createContext<BudgetsContextType | undefined>(undefined)
@@ -42,35 +44,69 @@ type BudgetsAction =
   | { type: 'ADD_EXPENSE'; payload: Omit<Expense, "id"> }
   | { type: 'DELETE_BUDGET'; payload: string }
   | { type: 'DELETE_EXPENSE'; payload: string }
+  | { type: 'EDIT_BUDGET'; payload: { id: string; newBudget: Omit<Budget, "id"> } }
+  | { type: 'EDIT_EXPENSE'; payload: { id: string; newExpense: Omit<Expense, "id"> } }
   | { type: 'SET_BUDGETS'; payload: Budget[] }
   | { type: 'SET_EXPENSES'; payload: Expense[] }
 
 function budgetsReducer(state: BudgetsState, action: BudgetsAction): BudgetsState {
+  let newState: BudgetsState;
   switch (action.type) {
     case 'ADD_BUDGET':
-      if (state.budgets.find(budget => budget.name === action.payload.name)) {
-        return state
-      }
-      return { ...state, budgets: [...state.budgets, { ...action.payload, id: uuidV4() }] }
+      newState = { 
+        ...state, 
+        budgets: [...state.budgets, { ...action.payload, id: uuidV4() }] 
+      };
+      break;
     case 'ADD_EXPENSE':
-      return { ...state, expenses: [...state.expenses, { ...action.payload, id: uuidV4() }] }
+      newState = { 
+        ...state, 
+        expenses: [...state.expenses, { ...action.payload, id: uuidV4() }] 
+      };
+      break;
     case 'DELETE_BUDGET':
-      return {
+      newState = {
         ...state,
         expenses: state.expenses.map(expense =>
           expense.budgetId === action.payload ? { ...expense, budgetId: UNCATEGORIZED_BUDGET_ID } : expense
         ),
         budgets: state.budgets.filter(budget => budget.id !== action.payload)
-      }
+      };
+      break;
     case 'DELETE_EXPENSE':
-      return { ...state, expenses: state.expenses.filter(expense => expense.id !== action.payload) }
+      newState = { 
+        ...state, 
+        expenses: state.expenses.filter(expense => expense.id !== action.payload) 
+      };
+      break;
+    case 'EDIT_BUDGET':
+      newState = {
+        ...state,
+        budgets: state.budgets.map(budget =>
+          budget.id === action.payload.id ? { ...budget, ...action.payload.newBudget } : budget
+        )
+      };
+      break;
+    case 'EDIT_EXPENSE':
+      newState = {
+        ...state,
+        expenses: state.expenses.map(expense =>
+          expense.id === action.payload.id ? { ...expense, ...action.payload.newExpense } : expense
+        )
+      };
+      break;
     case 'SET_BUDGETS':
-      return { ...state, budgets: action.payload }
+      newState = { ...state, budgets: action.payload };
+      break;
     case 'SET_EXPENSES':
-      return { ...state, expenses: action.payload }
+      newState = { ...state, expenses: action.payload };
+      break;
     default:
-      return state
+      return state;
   }
+  localStorage.setItem('budgets', JSON.stringify(newState.budgets));
+  localStorage.setItem('expenses', JSON.stringify(newState.expenses));
+  return newState;
 }
 
 export const BudgetsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -85,11 +121,6 @@ export const BudgetsProvider: React.FC<{ children: ReactNode }> = ({ children })
     if (storedBudgets) dispatch({ type: 'SET_BUDGETS', payload: JSON.parse(storedBudgets) })
     if (storedExpenses) dispatch({ type: 'SET_EXPENSES', payload: JSON.parse(storedExpenses) })
   }, [])
-
-  useEffect(() => {
-    localStorage.setItem('budgets', JSON.stringify(state.budgets))
-    localStorage.setItem('expenses', JSON.stringify(state.expenses))
-  }, [state.budgets, state.expenses])
 
   function getBudgetExpenses(budgetId: string) {
     return state.expenses.filter(expense => expense.budgetId === budgetId)
@@ -111,6 +142,14 @@ export const BudgetsProvider: React.FC<{ children: ReactNode }> = ({ children })
     dispatch({ type: 'DELETE_EXPENSE', payload: id })
   }
 
+  function editBudget(id: string, newBudget: Omit<Budget, "id">) {
+    dispatch({ type: 'EDIT_BUDGET', payload: { id, newBudget } })
+  }
+
+  function editExpense(id: string, newExpense: Omit<Expense, "id">) {
+    dispatch({ type: 'EDIT_EXPENSE', payload: { id, newExpense } })
+  }
+
   return (
     <BudgetsContext.Provider
       value={{
@@ -121,6 +160,8 @@ export const BudgetsProvider: React.FC<{ children: ReactNode }> = ({ children })
         addBudget,
         deleteBudget,
         deleteExpense,
+        editBudget,
+        editExpense,
       }}
     >
       {children}

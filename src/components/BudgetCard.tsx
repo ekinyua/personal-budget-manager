@@ -9,6 +9,7 @@ interface BudgetCardProps {
   hideButtons?: boolean
   onAddExpenseClick?: () => void
   onViewExpensesClick?: () => void
+  onEditClick?: () => void
 }
 
 export default function BudgetCard({
@@ -19,6 +20,7 @@ export default function BudgetCard({
   hideButtons,
   onAddExpenseClick,
   onViewExpensesClick,
+  onEditClick,
 }: BudgetCardProps) {
   const classNames = ["budget-card"]
   if (amount > max) {
@@ -26,6 +28,8 @@ export default function BudgetCard({
   } else if (gray) {
     classNames.push("bg-light")
   }
+
+  const overBudgetAmount = amount > max ? amount - max : 0
 
   return (
     <Card className={classNames.join(" ")}>
@@ -50,6 +54,11 @@ export default function BudgetCard({
             now={amount}
           />
         )}
+        {overBudgetAmount > 0 && (
+          <div className="budget-card__over-budget text-danger mt-1">
+            You have exceeded your budget by {currencyFormatter.format(overBudgetAmount)}
+          </div>
+        )}
         {!hideButtons && (
           <Stack direction="horizontal" gap={2} className="budget-card__buttons mt-4">
             <Button
@@ -60,6 +69,9 @@ export default function BudgetCard({
             </Button>
             <Button onClick={onViewExpensesClick} variant="outline-secondary">
               View Expenses
+            </Button>
+            <Button onClick={onEditClick} variant="outline-primary">
+              Edit
             </Button>
           </Stack>
         )}

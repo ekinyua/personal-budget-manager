@@ -1,4 +1,6 @@
 # Personal Budget Manager
+![App](./public/app-img.png)
+
 
 ## Description
 
@@ -8,8 +10,10 @@ The Personal Budget Manager is a user-friendly web application designed to help 
 
 1. **Add Expense:** Easily input details about each expense, including the amount, date, and category.
 2. **View Expenses:** Display a comprehensive list of all expenses, with options to filter by date and category.
-3. **Expense Summary:** Visualize your spending patterns through intuitive pie charts or bar graphs, categorized by expense type.
-4. **Budget Limits:** Set personalized budget limits for each category and receive alerts when approaching these limits.
+3. **Edit Expenses:** Edit your expenses.
+4. **Delete Expenses:** Delete any expenses.
+5. **Edit Budget:** Edit your budget.
+6. **Budget Limits:** Set personalized budget limits for each category and receive alerts when approaching these limits.
 
 ## Technical Specifications
 

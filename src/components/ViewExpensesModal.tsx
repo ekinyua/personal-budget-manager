@@ -1,13 +1,14 @@
 import { Modal, Button, Stack } from "react-bootstrap"
-import { UNCATEGORIZED_BUDGET_ID, useBudgets } from "../contexts/BudgetsContext"
+import { Expense, UNCATEGORIZED_BUDGET_ID, useBudgets } from "../contexts/BudgetsContext"
 import { currencyFormatter } from "../utils"
 
 interface ViewExpensesModalProps {
   budgetId: string | undefined;
   handleClose: () => void;
+  onEditExpense: (expense: Expense) => void; // Added prop
 }
 
-export default function ViewExpensesModal({ budgetId, handleClose }: ViewExpensesModalProps) {
+export default function ViewExpensesModal({ budgetId, handleClose, onEditExpense }: ViewExpensesModalProps) {
   const { getBudgetExpenses, budgets, deleteBudget, deleteExpense } = useBudgets()
 
   const expenses = budgetId ? getBudgetExpenses(budgetId) : []
@@ -25,7 +26,7 @@ export default function ViewExpensesModal({ budgetId, handleClose }: ViewExpense
             {budgetId !== UNCATEGORIZED_BUDGET_ID && (
               <Button
                 onClick={() => {
-                  if (budget) deleteBudget(budget)
+                  if (budget) deleteBudget(budget.id)
                   handleClose()
                 }}
                 variant="outline-danger"
@@ -45,11 +46,18 @@ export default function ViewExpensesModal({ budgetId, handleClose }: ViewExpense
                 {currencyFormatter.format(expense.amount)}
               </div>
               <Button
-                onClick={() => deleteExpense(expense)}
+                onClick={() => deleteExpense(expense.id)}
                 size="sm"
                 variant="outline-danger"
               >
                 &times;
+              </Button>
+              <Button
+                onClick={() => onEditExpense(expense)} // Use the onEditExpense prop here
+                size="sm"
+                variant="outline-primary"
+              >
+                Edit
               </Button>
             </Stack>
           ))}
