@@ -1,8 +1,8 @@
 # Personal Budget Manager
-![App](./public/app-1)
+![App](./public/app-1.png)
 
 ## Deployed App on Netlify
-[Netlify](https://chumz-budget-manager.netlify.app/)
+[chumz-budget-manager](https://chumz-budget-manager.netlify.app/)
 
 ## Description
 
